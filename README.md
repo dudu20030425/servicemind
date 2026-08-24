@@ -13,3 +13,7 @@ Enterprise AI Customer Support Agent.
 
 ```bash
 python -m uvicorn app.main:app --reload
+
+## Development
+
+Project initialized on 2026-08-24.
