@@ -1,0 +1,20 @@
+[
+  {
+    "order_id": "ORD10001",
+    "user_id": "U001",
+    "product_id": "P001",
+    "status": "shipped",
+    "payment_amount": 3999,
+    "created_at": "2026-08-20",
+    "tracking_number": "SF123456789"
+  },
+  {
+    "order_id": "ORD10002",
+    "user_id": "U002",
+    "product_id": "P002",
+    "status": "delivered",
+    "payment_amount": 599,
+    "created_at": "2026-08-15",
+    "tracking_number": "YT987654321"
+  }
+]

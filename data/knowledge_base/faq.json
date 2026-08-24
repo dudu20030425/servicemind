@@ -1,0 +1,20 @@
+[
+  {
+    "id": "FAQ001",
+    "question": "商品多久可以退货？",
+    "answer": "商品签收后7天内，在符合退货条件的情况下可以申请退货。",
+    "category": "refund"
+  },
+  {
+    "id": "FAQ002",
+    "question": "如何查询物流？",
+    "answer": "用户可以通过订单号查询物流状态和物流单号。",
+    "category": "logistics"
+  },
+  {
+    "id": "FAQ003",
+    "question": "商品出现故障怎么办？",
+    "answer": "保修期内出现非人为故障时，可以申请售后检测或维修。",
+    "category": "repair"
+  }
+]

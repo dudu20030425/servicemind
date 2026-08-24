@@ -1,0 +1,16 @@
+[
+  {
+    "product_id": "P001",
+    "name": "SmartPhone X1",
+    "category": "smartphone",
+    "price": 3999,
+    "warranty_days": 365
+  },
+  {
+    "product_id": "P002",
+    "name": "Wireless Earbuds Pro",
+    "category": "earbuds",
+    "price": 599,
+    "warranty_days": 365
+  }
+]
