@@ -1,11 +1,10 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+
+from app.api.routes import router
 
 app = FastAPI(title="ServiceMind")
 
-
-class ChatRequest(BaseModel):
-    message: str
+app.include_router(router)
 
 
 @app.get("/")
@@ -16,10 +15,3 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
-
-@app.post("/chat")
-def chat(request: ChatRequest):
-    return {
-        "message": f"ServiceMind received: {request.message}"
-    }
