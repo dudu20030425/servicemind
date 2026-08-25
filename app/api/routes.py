@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException
-from app.llm.provider import generate
 from app.llm.provider import (
     LLMServiceError,
     UnsupportedProviderError,
