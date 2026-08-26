@@ -2,7 +2,7 @@
 
 ServiceMind is an enterprise AI customer support backend built with FastAPI and Qwen.
 
-The project currently supports LLM chat, intent recognition, semantic knowledge retrieval, and grounded RAG responses for customer service scenarios such as refunds, logistics, product troubleshooting, and after-sales support.
+The project supports LLM chat, intent recognition, semantic knowledge retrieval, grounded RAG responses, Agent-based request routing, order lookup, and MCP-compatible tool access.
 
 ## Current Capabilities
 
@@ -17,8 +17,23 @@ The project currently supports LLM chat, intent recognition, semantic knowledge 
 - Relevance-threshold filtering
 - Knowledge-grounded answer generation
 - Evidence text, source, and score output
-- Automated API tests
-- Manual retrieval evaluation
+- Agent routing across chat, RAG, and business tools
+- JSON-backed order lookup tool
+- MCP server exposing `order_lookup`
+- Automated API, Agent, RAG, tool, and MCP tests
+- Manual semantic retrieval evaluation
+
+## Agent Workflow
+
+```text
+User Request
+    -> Customer Service Agent
+    -> Intent Routing
+        -> Order Query: order_lookup
+        -> Knowledge Question: RAG
+        -> General Conversation: Qwen Chat
+    -> Structured Agent Response
+```
 
 ## RAG Pipeline
 
@@ -49,6 +64,7 @@ The RAG service only generates an answer when sufficiently relevant knowledge is
 | POST | `/intent` | Customer-service intent recognition |
 | POST | `/retrieve` | Semantic Top-K knowledge retrieval |
 | POST | `/rag` | Grounded answer generation with evidence sources |
+| POST | `/agent` | Route requests across chat, RAG, and business tools |
 
 Interactive API documentation is available at:
 
@@ -56,20 +72,37 @@ Interactive API documentation is available at:
 http://127.0.0.1:8000/docs
 ```
 
+## MCP Server
+
+The MCP server exposes the existing business logic as a standardized tool:
+
+| Tool | Input | Description |
+|---|---|---|
+| `order_lookup` | `order_id: str` | Look up customer order details by order ID |
+
+Run the MCP server:
+
+```bash
+mcp run mcp_server/server.py
+```
+
 ## Project Structure
 
 ```text
 app/
-├── api/            # FastAPI routes
-├── llm/            # Qwen and provider abstraction
-├── models/         # Request and response schemas
-└── rag/            # Loading, embedding, retrieval, and RAG service
+  agents/          # Customer-service Agent and routing
+  api/             # FastAPI routes
+  llm/             # Qwen and provider abstraction
+  models/          # Request and response schemas
+  rag/             # Loading, embedding, retrieval, and RAG service
+  tools/           # Business tools
 
 data/
-├── business_db/    # Mock business data
-└── knowledge_base/ # FAQ, policy, and product knowledge
+  business_db/     # Mock order and business data
+  knowledge_base/  # FAQ, policy, and product knowledge
 
-tests/              # Automated tests, manual checks, and retrieval evaluation
+mcp_server/        # MCP server and tool exposure
+tests/             # Automated tests and manual evaluations
 ```
 
 ## Setup
@@ -96,7 +129,7 @@ python -m uvicorn app.main:app --reload
 
 ## Tests
 
-Run the automated test suite:
+Run the complete automated test suite:
 
 ```bash
 python -m pytest -q
@@ -105,7 +138,7 @@ python -m pytest -q
 Current result:
 
 ```text
-9 passed
+21 passed
 ```
 
 Run the semantic retrieval evaluation:
@@ -125,10 +158,9 @@ Hit@3 Accuracy: 100.00%
 
 ## Roadmap
 
-- Unified chat routing across LLM, RAG, and business tools
-- Order lookup and refund eligibility tools
-- Agent tool calling
-- Conversation memory
-- MCP integration
+- Refund eligibility tool
+- Product search and ticket creation tools
+- Conversation memory and user context
+- MCP-based Agent tool transport
 - Automated RAG response evaluation
-- API retry and observability
+- API retry, logging, and observability
