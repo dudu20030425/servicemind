@@ -11,12 +11,12 @@ client = TestClient(app)
 def test_retrieve():
     fake_results = [
         {
-            "id": "POLICY006",
-            "chunk_id": "POLICY006_chunk_0",
-            "text": "超过七天后仍可申请质量问题售后。",
-            "category": "return_policy",
-            "source": "return_policy.json",
-            "score": 0.7332,
+            "id": "PRODUCT003",
+            "chunk_id": "PRODUCT003_chunk_0",
+            "text": "Bluetooth earbud troubleshooting guide.",
+            "category": "product",
+            "source": "product_guide.json",
+            "score": 0.9348,
         }
     ]
 
@@ -27,14 +27,14 @@ def test_retrieve():
         response = client.post(
             "/retrieve",
             json={
-                "query": "超过七天还能申请售后吗？",
+                "query": "How do I fix my earbuds?",
                 "top_k": 3,
             },
         )
 
     assert response.status_code == 200
     assert response.json() == {
-        "query": "超过七天还能申请售后吗？",
+        "query": "How do I fix my earbuds?",
         "results": fake_results,
     }
 
@@ -43,7 +43,7 @@ def test_retrieve_invalid_top_k():
     response = client.post(
         "/retrieve",
         json={
-            "query": "如何退货？",
+            "query": "Test query",
             "top_k": 0,
         },
     )

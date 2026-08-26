@@ -2,7 +2,7 @@
 
 ServiceMind is an enterprise AI customer support backend built with FastAPI and Qwen.
 
-The project currently supports LLM chat, intent recognition, and semantic knowledge retrieval for customer service scenarios such as refunds, logistics, product troubleshooting, and after-sales support.
+The project currently supports LLM chat, intent recognition, semantic knowledge retrieval, and grounded RAG responses for customer service scenarios such as refunds, logistics, product troubleshooting, and after-sales support.
 
 ## Current Capabilities
 
@@ -14,10 +14,13 @@ The project currently supports LLM chat, intent recognition, and semantic knowle
 - Qwen text embedding
 - Persistent local vector index
 - Cosine-similarity Top-K retrieval
-- Retrieval source and score output
+- Relevance-threshold filtering
+- Knowledge-grounded answer generation
+- Evidence text, source, and score output
 - Automated API tests
+- Manual retrieval evaluation
 
-## RAG Retrieval Pipeline
+## RAG Pipeline
 
 ```text
 Knowledge JSON
@@ -25,11 +28,17 @@ Knowledge JSON
     -> Text Chunker
     -> Embedding Model
     -> Vector Index
+
+User Query
+    -> Query Embedding
     -> Cosine Similarity Search
-    -> Top-K Results
+    -> Relevance Filtering
+    -> Context Construction
+    -> Qwen Answer Generation
+    -> Answer with Evidence Sources
 ```
 
-The current milestone implements the retrieval layer. Grounded answer generation using the retrieved context will be added next.
+The RAG service only generates an answer when sufficiently relevant knowledge is retrieved. Otherwise, it returns a controlled response without calling the chat model.
 
 ## API Endpoints
 
@@ -39,6 +48,7 @@ The current milestone implements the retrieval layer. Grounded answer generation
 | POST | `/chat` | Qwen-based conversation |
 | POST | `/intent` | Customer-service intent recognition |
 | POST | `/retrieve` | Semantic Top-K knowledge retrieval |
+| POST | `/rag` | Grounded answer generation with evidence sources |
 
 Interactive API documentation is available at:
 
@@ -53,13 +63,13 @@ app/
 ├── api/            # FastAPI routes
 ├── llm/            # Qwen and provider abstraction
 ├── models/         # Request and response schemas
-└── rag/            # Loader, chunker, embedding, and retrieval
+└── rag/            # Loading, embedding, retrieval, and RAG service
 
 data/
 ├── business_db/    # Mock business data
 └── knowledge_base/ # FAQ, policy, and product knowledge
 
-tests/              # Automated and manual tests
+tests/              # Automated tests, manual checks, and retrieval evaluation
 ```
 
 ## Setup
@@ -95,15 +105,30 @@ python -m pytest -q
 Current result:
 
 ```text
-7 passed
+9 passed
+```
+
+Run the semantic retrieval evaluation:
+
+```bash
+python -m tests.manual_retrieval_eval
+```
+
+Current retrieval result:
+
+```text
+Hit@1: 10/10
+Hit@3: 10/10
+Hit@1 Accuracy: 100.00%
+Hit@3 Accuracy: 100.00%
 ```
 
 ## Roadmap
 
-- RAG-based grounded answer generation
-- Source citation in customer-service answers
+- Unified chat routing across LLM, RAG, and business tools
 - Order lookup and refund eligibility tools
 - Agent tool calling
 - Conversation memory
 - MCP integration
-- Retrieval and response evaluation
+- Automated RAG response evaluation
+- API retry and observability

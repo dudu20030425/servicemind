@@ -22,6 +22,26 @@ test_cases = [
         "query": "商品签收九天后发现质量问题，还能申请售后吗？",
         "expected_id": "POLICY006",
     },
+    {
+        "query": "退款审核已经通过，钱大概几天能退回来？",
+        "expected_id": "FAQ004",
+    },
+    {
+        "query": "我买完东西以后要在哪里开电子发票？",
+        "expected_id": "FAQ008",
+    },
+    {
+        "query": "提交退货申请时需要上传哪些资料？",
+        "expected_id": "POLICY003",
+    },
+    {
+        "query": "商品有质量问题需要退货，寄回去的运费谁出？",
+        "expected_id": "POLICY004",
+    },
+    {
+        "query": "新买的智能手环怎样和手机进行配对？",
+        "expected_id": "PRODUCT001",
+    },
 ]
 
 hit_at_1 = 0

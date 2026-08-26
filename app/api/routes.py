@@ -10,10 +10,13 @@ from app.models.schemas import (
     ChatRequest,
     ChatResponse,
     IntentResponse,
+    RagRequest,
+    RagResponse,
     RetrieveRequest,
     RetrieveResponse,
 )
 from app.rag.retriever import retrieve
+from app.rag.service import answer_with_rag
 
 router = APIRouter()
 
@@ -91,5 +94,54 @@ def retrieve_knowledge(
     except ValueError as exc:
         raise HTTPException(
             status_code=500,
+            detail=str(exc),
+        )
+
+@router.post(
+    "/rag",
+    response_model=RagResponse,
+)
+def rag_answer(request: RagRequest):
+    try:
+        result = answer_with_rag(
+            request.query,
+            top_k=request.top_k,
+        )
+
+        return RagResponse(
+            query=request.query,
+            answer=result["answer"],
+            provider=result["provider"],
+            model=result["model"],
+            sources=result["sources"],
+        )
+
+    except LLMServiceError:
+        raise HTTPException(
+            status_code=502,
+            detail="LLM service unavailable",
+        )
+
+    except UnsupportedProviderError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=str(exc),
+        )
+
+    except OpenAIError:
+        raise HTTPException(
+            status_code=502,
+            detail="Embedding service unavailable",
+        )
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=500,
+            detail="Vector index not found",
+        )
+
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
             detail=str(exc),
         )

@@ -40,3 +40,23 @@ class RetrievalResult(BaseModel):
 class RetrieveResponse(BaseModel):
     query: str
     results: list[RetrievalResult]
+
+
+class RagRequest(BaseModel):
+    query: str = Field(min_length=1)
+    top_k: int = Field(default=3, ge=1, le=10)
+
+
+class RagSource(BaseModel):
+    id: str
+    text: str
+    source: str
+    score: float
+
+
+class RagResponse(BaseModel):
+    query: str
+    answer: str
+    provider: str | None
+    model: str | None
+    sources: list[RagSource]
