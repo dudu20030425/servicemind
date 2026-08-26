@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from openai import OpenAIError
 from app.llm.provider import (
     LLMServiceError,
     UnsupportedProviderError,
@@ -9,7 +10,10 @@ from app.models.schemas import (
     ChatRequest,
     ChatResponse,
     IntentResponse,
+    RetrieveRequest,
+    RetrieveResponse,
 )
+from app.rag.retriever import retrieve
 
 router = APIRouter()
 
@@ -49,6 +53,42 @@ def intent(request: ChatRequest):
         )
 
     except UnsupportedProviderError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=str(exc),
+        )
+
+@router.post(
+    "/retrieve",
+    response_model=RetrieveResponse,
+)
+def retrieve_knowledge(
+    request: RetrieveRequest,
+):
+    try:
+        results = retrieve(
+            request.query,
+            request.top_k,
+        )
+
+        return RetrieveResponse(
+            query=request.query,
+            results=results,
+        )
+
+    except OpenAIError:
+        raise HTTPException(
+            status_code=502,
+            detail="Embedding service unavailable",
+        )
+
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=500,
+            detail="Vector index not found",
+        )
+
+    except ValueError as exc:
         raise HTTPException(
             status_code=500,
             detail=str(exc),

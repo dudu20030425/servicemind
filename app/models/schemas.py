@@ -22,3 +22,21 @@ class IntentResponse(BaseModel):
     ]
     order_id: str | None = None
     need_tool: bool
+
+class RetrieveRequest(BaseModel):
+    query: str = Field(min_length=1)
+    top_k: int = Field(default=3, ge=1, le=10)
+
+
+class RetrievalResult(BaseModel):
+    id: str
+    chunk_id: str
+    text: str
+    category: str
+    source: str
+    score: float
+
+
+class RetrieveResponse(BaseModel):
+    query: str
+    results: list[RetrievalResult]
