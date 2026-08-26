@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -57,6 +57,22 @@ class RagSource(BaseModel):
 class RagResponse(BaseModel):
     query: str
     answer: str
+    provider: str | None
+    model: str | None
+    sources: list[RagSource]
+
+
+class AgentResponse(BaseModel):
+    answer: str
+    intent: Literal[
+        "order_query",
+        "refund_query",
+        "product_query",
+        "general_chat",
+    ]
+    route: Literal["tool", "rag", "chat"]
+    tool_name: str | None
+    data: dict[str, Any] | None
     provider: str | None
     model: str | None
     sources: list[RagSource]
